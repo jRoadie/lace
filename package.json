@@ -21,6 +21,8 @@
   "author": "jRoadie",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "jquery": "^2.1.4",
+    "jsdom": "^6.3.0"
   }
 }
