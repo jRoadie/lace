@@ -6,9 +6,9 @@
         app = express()
         , path = require('path')
         , jsdom = require('jsdom')
-        , window = jsdom.jsdom().parentWindow
+        , window = jsdom.jsdom('<html><head></head><body></body></html>').defaultView
         , $ = require('jquery')(window)
-        , lace = require('./src/lace')
+        , lace = require('./src/lace')(window)
     ;
 
     var config = {

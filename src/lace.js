@@ -1,14 +1,26 @@
-(function(global, factory) {
+(function(global, engine) {
 
     if(typeof module === "object" && typeof module.exports === "object") {
-        module.exports = global.document ? factory(global, true) : function(w) {
-                if(!w.document) {
-                    throw new Error("jQuery requires a window with a document");
+        module.exports = global.document ? engine(global, true) :
+            function(html) {
+                var
+                    jsdom = require('jsdom'),
+                    _window = jsdom.jsdom(html).defaultView,
+                    $ = require('jquery')
+                ;
+                if(!jsdom) {
+                    throw new Error('Lace requires jsdom installed.')
                 }
-                return factory(w);
+                if(!$) {
+                    throw new Error('Lace requires jQuery installed.')
+                }
+                if(!_window.document) {
+                    throw new Error('Lace requires a window with a document');
+                }
+                return engine(_window);
             };
     } else {
-        factory(global);
+        engine(global);
     }
 
 // Pass this if window is not defined yet
@@ -36,7 +48,7 @@
             taglets: {}
         }
 
-        ;
+    ;
 
     var Lace = function() {
 
