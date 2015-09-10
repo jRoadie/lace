@@ -1,30 +1,33 @@
 (function(global, engine) {
 
     if(typeof module === "object" && typeof module.exports === "object") {
-        module.exports = global.document ? engine(global, true) :
+        module.exports = global.document ? engine(global, jQuery, true) :
             function(html) {
                 var
                     jsdom = require('jsdom'),
                     _window = jsdom.jsdom(html).defaultView,
-                    $ = require('jquery')
+                    jQuery = require('jquery')
                 ;
                 if(!jsdom) {
                     throw new Error('Lace requires jsdom installed.')
                 }
-                if(!$) {
+                if(!jQuery) {
                     throw new Error('Lace requires jQuery installed.')
                 }
                 if(!_window.document) {
-                    throw new Error('Lace requires a window with a document');
+                    throw new Error('Lace requires a window with a document.');
                 }
-                return engine(_window);
+                return engine(_window, jQuery);
             };
     } else {
-        engine(global);
+        if(!jQuery) {
+            throw new Error('Lace requires jQuery loaded.')
+        }
+        engine(global, jQuery);
     }
 
 // Pass this if window is not defined yet
-}(typeof window === "undefined" ? this : window, function(window, noGlobal) {
+}(typeof window === "undefined" ? this : window, function(window, $, noGlobal) {
 
     'use strict';
 
