@@ -18,7 +18,8 @@
                     throw new Error('Lace requires a window with a document.');
                 }
                 return engine(_window, jQuery);
-            };
+            }
+        ;
     } else {
         if(!jQuery) {
             throw new Error('Lace requires jQuery loaded.')

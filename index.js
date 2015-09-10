@@ -19,6 +19,10 @@
         backend_dir: __dirname
     };
 
+    app.use('/lib', express.static('./node_modules'));
+    app.use('/src', express.static('./src'));
+
+
 /*
     app.use(require('./routes/Filter'));
 
@@ -31,7 +35,6 @@
 
     app.get('/', function(req, res) {
         console.log(new Date());
-        console.log($('<div></div>'))
         res.sendFile(path.resolve('./index.html'))
     });
 
