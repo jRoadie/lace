@@ -1,34 +1,29 @@
 (function(global, engine) {
 
     if(typeof module === "object" && typeof module.exports === "object") {
-        module.exports = global.document ? engine(global, jQuery, true) :
-            function(html) {
+        module.exports = global.document ? engine(global, true) :
+            function() {
                 var
-                    jsdom = require('jsdom'),
-                    _window = jsdom.jsdom(html).defaultView,
-                    jQuery = require('jquery')
+                    jsdom = require('jsdom').jsdom,
+                    jQueryFactory = require('jquery')
                 ;
                 if(!jsdom) {
                     throw new Error('Lace requires jsdom installed.')
                 }
-                if(!jQuery) {
+                if(!jQueryFactory) {
                     throw new Error('Lace requires jQuery installed.')
                 }
-                if(!_window.document) {
-                    throw new Error('Lace requires a window with a document.');
-                }
-                return engine(_window, jQuery);
-            }
-        ;
+                return engine(global, undefined, jsdom, jQueryFactory);
+            }();
     } else {
         if(!jQuery) {
             throw new Error('Lace requires jQuery loaded.')
         }
-        engine(global, jQuery);
+        engine(global);
     }
 
 // Pass this if window is not defined yet
-}(typeof window === "undefined" ? this : window, function(window, $, noGlobal) {
+}(typeof window === "undefined" ? this : window, function(window, noGlobal, jsdom, jQueryFactory) {
 
     'use strict';
 
@@ -48,21 +43,27 @@
         defaults = {},
 
         warehouse = {
+            //singleton lace for browser end
             singleton: null,
             taglets: {}
         }
 
     ;
 
-    var Lace = function() {
-
+    var Lace = function(window) {
+        this.window = window;
+        this.jQuery = typeof jQueryFactory === 'undefined' ? window.jQuery : jQueryFactory(window);
     };
 
     Lace.prototype = {
 
         version: version,
 
-        constructor: Lace
+        constructor: Lace,
+
+        jq: function() {
+            console.log(this.jQuery(this.window.document).find('h1').text())
+        }
 
     };
 
@@ -84,11 +85,15 @@
 
     };
 
-    lace = function() {
-        if(warehouse.singleton == null) {
-            warehouse.singleton = new Lace();
+    lace = function(doc) {
+        if(typeof doc === 'undefined') {
+            if(warehouse.singleton == null) {
+                warehouse.singleton = new Lace(window);
+            }
+            return warehouse.singleton;
         }
-        return warehouse.singleton;
+        window = jsdom(doc).defaultView;
+        return new Lace(window);
     };
 
     lace.taglet = function(name, def) {

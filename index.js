@@ -3,12 +3,10 @@
     'use strict';
 
     var
-        app = express()
-        , path = require('path')
-        , jsdom = require('jsdom')
-        , window = jsdom.jsdom('<html><head></head><body></body></html>').defaultView
-        , $ = require('jquery')(window)
-        , lace = require('./src/lace')(window)
+        app = express(),
+        fs = require('fs'),
+        path = require('path'),
+        lace = require('./src/lace')
     ;
 
     var config = {
@@ -35,6 +33,9 @@
 
     app.get('/', function(req, res) {
         console.log(new Date());
+        fs.readFile(path.resolve('./index.html'), {}, function(err, content) {
+            lace(content.toString()).jq()
+        });
         res.sendFile(path.resolve('./index.html'))
     });
 
