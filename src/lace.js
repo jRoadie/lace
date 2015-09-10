@@ -1,5 +1,4 @@
 (function(global, engine) {
-
     if(typeof module === "object" && typeof module.exports === "object") {
         module.exports = global.document ? engine(global, true) :
             function() {
@@ -16,14 +15,14 @@
                 return engine(global, undefined, jsdom, jQueryFactory);
             }();
     } else {
+        //this 'else' block will render in browser end
         if(!jQuery) {
             throw new Error('Lace requires jQuery loaded.')
         }
         engine(global);
     }
-
 // Pass this if window is not defined yet
-}(typeof window === "undefined" ? this : window, function(window, noGlobal, jsdom, jQueryFactory) {
+}(typeof window === "undefined" ? this : window, function(window, noGlobal, jsdom, jQueryModule) {
 
     'use strict';
 
@@ -52,7 +51,7 @@
 
     var Lace = function(window) {
         this.window = window;
-        this.jQuery = typeof jQueryFactory === 'undefined' ? window.jQuery : jQueryFactory(window);
+        this.jQuery = typeof jQueryModule === 'undefined' ? window.jQuery : jQueryModule(window);
     };
 
     Lace.prototype = {
@@ -87,11 +86,13 @@
 
     lace = function(doc) {
         if(typeof doc === 'undefined') {
+            //for browser
             if(warehouse.singleton == null) {
                 warehouse.singleton = new Lace(window);
             }
             return warehouse.singleton;
         }
+        //for server
         window = jsdom(doc).defaultView;
         return new Lace(window);
     };
