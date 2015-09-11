@@ -32,6 +32,7 @@
         version = '1.0.0',
 
         type = {
+            undefined: typeof undefined,
             object: typeof {},
             func: typeof function() {
             },
@@ -51,7 +52,7 @@
 
     var Lace = function(window) {
         this.window = window;
-        this.jQuery = typeof jQueryModule === 'undefined' ? window.jQuery : jQueryModule(window);
+        this.jQuery = typeof jQueryModule === type.undefined ? window.jQuery : jQueryModule(window);
     };
 
     Lace.prototype = {
@@ -60,8 +61,17 @@
 
         constructor: Lace,
 
-        jq: function() {
-            console.log(this.jQuery(this.window.document).find('h1').text())
+        taglet: function(name, def) {
+            /* only support object type def of taglet
+             TODO: initialize support for function type def */
+            if(typeof def !== type.object) {
+                warehouse.taglets[name] = new Taglet(name, def);
+            }
+            return warehouse.taglets[name];
+        },
+
+        tagletExt: function(name, def) {
+            //TODO: implement to extend existing taglet
         }
 
     };
@@ -85,7 +95,7 @@
     };
 
     lace = function(doc) {
-        if(typeof doc === 'undefined') {
+        if(typeof doc === type.undefined) {
             //for browser
             if(warehouse.singleton == null) {
                 warehouse.singleton = new Lace(window);
@@ -97,19 +107,6 @@
         return new Lace(window);
     };
 
-    lace.taglet = function(name, def) {
-        /* only support object type def of taglet
-         TODO: initialize support for function type def */
-        if(typeof def !== type.object) {
-            warehouse.taglets[name] = new Taglet(name, def);
-        }
-        return warehouse.taglets[name];
-    };
-
-    lace.extendTaglet = function(name, def) {
-        //TODO: implement to extend existing taglet
-    };
-
     /**
      * initializing lace itself
      * */
@@ -119,7 +116,7 @@
 
     })();
 
-    if(typeof noGlobal === "undefined") {
+    if(typeof noGlobal === type.undefined) {
         window.lace = lace;
     }
 
