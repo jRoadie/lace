@@ -1,28 +1,22 @@
 (function(global, engine) {
     if(typeof module === "object" && typeof module.exports === "object") {
-        module.exports = global.document ? engine(global, true) :
+        module.exports = global.document ? engine(global.jQuery, true) :
             function() {
-                var
-                    jsdom = require('jsdom').jsdom,
-                    jQueryFactory = require('jquery')
-                ;
-                if(!jsdom) {
-                    throw new Error('Lace requires jsdom installed.')
+                var cheerio = require('cheerio');
+                if(!cheerio) {
+                    throw new Error('Lace requires cheerio installed.')
                 }
-                if(!jQueryFactory) {
-                    throw new Error('Lace requires jQuery installed.')
-                }
-                return engine(global, undefined, jsdom, jQueryFactory);
+                return engine(cheerio);
             }();
     } else {
         //this 'else' block will render in browser end
-        if(!jQuery) {
+        if(!global.jQuery) {
             throw new Error('Lace requires jQuery loaded.')
         }
-        engine(global);
+        engine(global.jQuery);
     }
 // Pass this if window is not defined yet
-}(typeof window === "undefined" ? this : window, function(window, noGlobal, jsdom, jQueryModule) {
+}(typeof window === "undefined" ? this : window, function($, noGlobal) {
 
     'use strict';
 
@@ -45,14 +39,39 @@
         warehouse = {
             //singleton lace for browser end
             singleton: null,
-            taglets: {}
+            compiled_dom: null,
+            taglets: {},
+            scriptlets: {}
         }
 
     ;
 
-    var Lace = function(window) {
-        this.window = window;
-        this.jQuery = typeof jQueryModule === type.undefined ? window.jQuery : jQueryModule(window);
+    var Node = function() {
+        this.parent = parent;
+        this.children = [];
+        this.taglet = undefined;
+        this.annotations = [];
+        this.scope = undefined;
+    };
+
+    Node.prototype = {
+        __lace__ : {
+            compiledElement: undefined
+        },
+        compiledElement: function() {
+            return this.__lace__.compiledElement;
+        }
+    };
+
+    var Scope = function() {
+        this.parent = parent;
+    };
+
+    Scope.prototype = {
+
+    };
+
+    var Lace = function() {
     };
 
     Lace.prototype = {
@@ -60,6 +79,14 @@
         version: version,
 
         constructor: Lace,
+
+        compile: function() {
+
+        },
+
+        render: function(data) {
+
+        },
 
         taglet: function(name, def) {
             /* only support object type def of taglet
@@ -70,8 +97,16 @@
             return warehouse.taglets[name];
         },
 
-        tagletExt: function(name, def) {
+        tagletExtend: function(name, def) {
             //TODO: implement to extend existing taglet
+        },
+
+        annotation: function(name, def) {
+
+        },
+
+        scriptlet: function(name, def) {
+
         }
 
     };
@@ -94,17 +129,45 @@
 
     };
 
-    lace = function(doc) {
-        if(typeof doc === type.undefined) {
-            //for browser
-            if(warehouse.singleton == null) {
-                warehouse.singleton = new Lace(window);
-            }
-            return warehouse.singleton;
+    var Annotation = function(name, def) {
+        this.name = name;
+
+    };
+
+    Annotation.prototype = {
+
+        constructor: Annotation,
+
+        compile: function() {
+
+        },
+
+        execute: function() {
+
         }
-        //for server
-        window = jsdom(doc).defaultView;
-        return new Lace(window);
+
+    };
+
+    var Scriptlet = function(name, def) {
+        this.name = name;
+    };
+
+    Scriptlet.prototype = {
+
+        constructor: Scriptlet,
+
+        compile: function() {
+
+        },
+
+        execute: function() {
+
+        }
+
+    };
+
+    lace = function() {
+        return warehouse.singleton;
     };
 
     /**
@@ -112,7 +175,15 @@
      * */
     (function() {
 
-        lace.taglet('let', {})
+        var lace = warehouse.singleton = new Lace();
+
+        lace.taglet('let', {});
+
+        lace.annotation('for', {
+            compile: function(node) {
+
+            }
+        })
 
     })();
 

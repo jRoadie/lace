@@ -5,6 +5,10 @@
     <title>Let ace!</title>
 </head>
 <body>
-
+<ul>
+    <li @for="users" @as="user" $idx="i">
+        ${i} ${user.name}
+    </li>
+</ul>
 </body>
 </html>
