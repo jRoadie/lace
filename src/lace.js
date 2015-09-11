@@ -112,7 +112,7 @@
     };
 
     var Taglet = function(name, def) {
-        this.name = def.name;
+        this.name = name;
     };
 
     Taglet.prototype = {
