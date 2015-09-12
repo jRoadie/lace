@@ -3,10 +3,11 @@
         module.exports = global.document ? engine(global.jQuery, true) :
             function() {
                 var cheerio = require('cheerio');
+                cheerio.fs = require('fs');
                 if(!cheerio) {
                     throw new Error('Lace requires cheerio installed.')
                 }
-                return engine(cheerio);
+                return engine(cheerio, undefined, true);
             }();
     } else {
         //this 'else' block will render in browser end
@@ -16,7 +17,7 @@
         engine(global.jQuery);
     }
 // Pass this if window is not defined yet
-}(typeof window === "undefined" ? this : window, function($, noGlobal) {
+}(typeof window === "undefined" ? this : window, function($, noGlobal, isServer) {
 
     'use strict';
 
@@ -88,17 +89,16 @@
 
         },
 
-        taglet: function(name, def) {
+        taglet: function(name, def, extend) {
             /* only support object type def of taglet
              TODO: initialize support for function type def */
-            if(typeof def !== type.object) {
+            if(def == 'extend') {
+                //TODO: implement to extend existing taglet with arg extend
+            }
+            if(typeof def === type.object) {
                 warehouse.taglets[name] = new Taglet(name, def);
             }
             return warehouse.taglets[name];
-        },
-
-        tagletExtend: function(name, def) {
-            //TODO: implement to extend existing taglet
         },
 
         annotation: function(name, def) {
@@ -113,18 +113,44 @@
 
     var Taglet = function(name, def) {
         this.name = name;
+        this.template = def.template;
     };
 
     Taglet.prototype = {
 
         constructor: Taglet,
 
-        compile: function() {
-
+        __lace__: {
+            node: undefined
         },
 
-        render: function() {
+        compile: function() {
+            var self = this;
+            self.resolveTemplate();
+            $(self.template)
+        },
 
+        render: function(data) {
+            var self = this;
+            if(typeof self.__lace__.node === type.undefined) {
+                self.compile();
+            }
+        },
+
+        resolveTemplate: function() {
+            var self = this;
+            if(typeof self.template === type.string) {
+                //TODO: implement for inline template
+                return;
+            }
+            if(!self.template instanceof Array) {
+                throw new Error('Template should be inline or array of file paths');
+            }
+            for(var filepath in self.template) {
+                Lace.load(filepath, function(content) {
+                    self.template += content;
+                });
+            }
         }
 
     };
@@ -164,6 +190,16 @@
 
         }
 
+    };
+
+    Lace.load = function(filepath, callback) {
+        if(isServer) {
+            $.fs.readFile(filepath, function(err, bytes) {
+                if(err) throw err;
+                callback(bytes.toString());
+            })
+        }
+        //TODO: implement ajax loading of remote templates
     };
 
     lace = function() {
