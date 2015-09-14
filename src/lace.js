@@ -174,6 +174,14 @@
 
         constructor: Annotation,
 
+        key: function() {
+            //return annotation key
+        },
+
+        val: function() {
+            //return current scope value
+        },
+
         compile: function() {
 
         },
@@ -231,7 +239,7 @@
             compile: function($el) {
 
             },
-            execute: function(data, annotations, taglet, scope) {
+            execute: function(annotation, taglet, scope) {
                 if(typeof data )
             }
         })
