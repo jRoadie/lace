@@ -81,11 +81,15 @@
 
         constructor: Lace,
 
+        __lace__: {
+
+        },
+
         compile: function() {
 
         },
 
-        render: function(data) {
+        render: function(html, data) {
 
         },
 
@@ -102,7 +106,13 @@
         },
 
         annotation: function(name, def) {
-
+            if(def === 'extend') {
+                //TODO:
+            }
+            if(typeof def == type.object) {
+                warehouse.annotations[name] = new Annotation(name, def);
+            }
+            return warehouse.annotations[name];
         },
 
         scriptlet: function(name, def) {
@@ -113,7 +123,7 @@
 
     var Taglet = function(name, def) {
         this.name = name;
-        this.template = def.template;
+        this.__lace__.template = def.template;
     };
 
     Taglet.prototype = {
@@ -121,18 +131,18 @@
         constructor: Taglet,
 
         __lace__: {
-            node: undefined
+            template: undefined
         },
 
         compile: function() {
             var self = this;
             self.resolveTemplate();
-            $(self.template)
+            $(self.__lace__.template)
         },
 
         render: function(data) {
             var self = this;
-            if(typeof self.__lace__.node === type.undefined) {
+            if(typeof self.__lace__.template === type.undefined) {
                 self.compile();
             }
         },
@@ -157,7 +167,7 @@
 
     var Annotation = function(name, def) {
         this.name = name;
-
+        this.def = def;
     };
 
     Annotation.prototype = {
@@ -168,8 +178,10 @@
 
         },
 
-        execute: function() {
-
+        execute: function(data, annotations, taglet, scope) {
+            if(typeof this.def.execute === type.func) {
+                this.def.execute(data, annotations, taglet, scope)
+            }
         }
 
     };
@@ -216,8 +228,11 @@
         lace.taglet('let', {});
 
         lace.annotation('for', {
-            compile: function(node) {
+            compile: function($el) {
 
+            },
+            execute: function(data, annotations, taglet, scope) {
+                if(typeof data )
             }
         })
 
