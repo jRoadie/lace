@@ -282,8 +282,23 @@
         });
 
         lace.scriptlet('.', {
+            precedence: 1,
+            compile: function(idx, operands, taglet) {
+                return function(scope) {
+                    return scope[operands[idx-1]][operands[idx+1]];
+                }
+            },
             execute: function(idx, arr, raw) {
-                lace.scope()[arr[idx-1]][arr[idx+1]]
+
+            }
+        });
+
+        lace.scriptlet(':', {
+            precedence: 10,
+            compile: function(idx, operands, taglet) {
+                return function(scope) {
+
+                };
             }
         });
 
