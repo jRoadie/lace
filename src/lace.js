@@ -35,7 +35,14 @@
             number: typeof 0
         },
 
-        defaults = {},
+        defaults = {
+            opts: {
+                scriptlet: {
+                    startWith: '${',
+                    endWith: '}'
+                }
+            }
+        },
 
         warehouse = {
             //singleton lace for browser end
@@ -43,36 +50,36 @@
             compiled_dom: null,
             taglets: {},
             scriptlets: {}
+        },
+
+        defs = {
+
         }
 
     ;
 
-    var Node = function() {
+    var Scope = function(parent, current) {
         this.parent = parent;
-        this.children = [];
-        this.taglet = undefined;
-        this.annotations = [];
-        this.scope = undefined;
-    };
-
-    Node.prototype = {
-        __lace__ : {
-            compiledElement: undefined
-        },
-        compiledElement: function() {
-            return this.__lace__.compiledElement;
-        }
-    };
-
-    var Scope = function() {
-        this.parent = parent;
+        this.current = current;
     };
 
     Scope.prototype = {
 
+        constructor: Scope,
+
+        current: function() {
+
+        },
+
+        parent: function() {
+
+        }
+
     };
 
     var Lace = function() {
+        var root_scope = new Scope({});
+
     };
 
     Lace.prototype = {
@@ -82,15 +89,38 @@
         constructor: Lace,
 
         __lace__: {
-
+            definitions: {
+                annotations: {},
+                scriptlets: {},
+                taglets: {}
+            },
+            instances: {
+                annotations: {},
+                scriptlets: {},
+                taglets: {}
+            }
         },
 
-        compile: function() {
-
+        annotation: function(name, def) {
+            if(def === 'extend') {
+                //TODO:
+            }
+            if(typeof def === type.object) {
+                this.__lace__.definitions.annotations[name] = def;
+            }
+            return this.__lace__.instances.annotations[name];
         },
 
-        render: function(html, data) {
-
+        scriptlet: function(name, def, extend) {
+            /* only support object type def of taglet
+             TODO: initialize support for function type def */
+            if(def == 'extend') {
+                //TODO: implement to extend existing taglet with arg extend
+            }
+            if(typeof def === type.object) {
+                this.__lace__.definitions.scriptlets[name] = def;
+            }
+            return this.__lace__.instances.scriptlets[name];
         },
 
         taglet: function(name, def, extend) {
@@ -100,30 +130,73 @@
                 //TODO: implement to extend existing taglet with arg extend
             }
             if(typeof def === type.object) {
-                warehouse.taglets[name] = new Taglet(name, def);
+                this.__lace__.definitions.taglets[name] = def;
             }
-            return warehouse.taglets[name];
+            return this.__lace__.instances.taglets[name];
         },
 
-        annotation: function(name, def) {
-            if(def === 'extend') {
-                //TODO:
-            }
-            if(typeof def == type.object) {
-                warehouse.annotations[name] = new Annotation(name, def);
-            }
-            return warehouse.annotations[name];
+        compile: function() {
+
         },
 
-        scriptlet: function(name, def) {
+        render: function(html, data) {
 
         }
 
     };
 
-    var Taglet = function(name, def) {
+    var Annotation = function(name, value) {
         this.name = name;
-        this.__lace__.template = def.template;
+        this.value = value;
+    };
+
+    Annotation.prototype = {
+
+        constructor: Annotation,
+
+        key: function() {
+            //return annotation key
+        },
+
+        val: function() {
+            //return current scope value
+        },
+
+        compile: function() {
+
+        },
+
+        execute: function() {
+            if(typeof this.def.execute === type.func) {
+
+            }
+        }
+
+    };
+
+    var Scriptlet = function(name) {
+        this.name = name;
+        this.scriptlets = []; //support inner scriptlets
+    };
+
+    Scriptlet.prototype = {
+
+        constructor: Scriptlet,
+
+        compile: function() {
+
+        },
+
+        execute: function() {
+
+        }
+
+    };
+
+    var Taglet = function(name) {
+        this.name = name;
+        this.annotations = {};
+        this.children = [];
     };
 
     Taglet.prototype = {
@@ -148,8 +221,8 @@
         },
 
         resolveTemplate: function() {
-            var self = this;
-            if(typeof self.template === type.string) {
+            var def = lace;
+            if(typeof self.__lace__.template === type.string) {
                 //TODO: implement for inline template
                 return;
             }
@@ -165,53 +238,6 @@
 
     };
 
-    var Annotation = function(name, def) {
-        this.name = name;
-        this.def = def;
-    };
-
-    Annotation.prototype = {
-
-        constructor: Annotation,
-
-        key: function() {
-            //return annotation key
-        },
-
-        val: function() {
-            //return current scope value
-        },
-
-        compile: function() {
-
-        },
-
-        execute: function(data, annotations, taglet, scope) {
-            if(typeof this.def.execute === type.func) {
-                this.def.execute(data, annotations, taglet, scope)
-            }
-        }
-
-    };
-
-    var Scriptlet = function(name, def) {
-        this.name = name;
-    };
-
-    Scriptlet.prototype = {
-
-        constructor: Scriptlet,
-
-        compile: function() {
-
-        },
-
-        execute: function() {
-
-        }
-
-    };
-
     Lace.load = function(filepath, callback) {
         if(isServer) {
             $.fs.readFile(filepath, function(err, bytes) {
@@ -220,6 +246,19 @@
             })
         }
         //TODO: implement ajax loading of remote templates
+    };
+
+    Lace.isScriptlet = function(target) {
+        //TODO: implement pointing defaults to resolved
+        return target.indexOf(defaults.opts.scriptlet.startWith) == 0
+            && target.indexOf(defaults.opts.scriptlet.endWith) == target.length - defaults.opts.scriptlet.endWith.length
+    };
+
+    Lace.pickScriptlet = function(target) {
+        var startIdx = target.indexOf(defaults.opts.scriptlet.startWith);
+        if(startIdx > -1) {
+
+        }
     };
 
     lace = function() {
@@ -233,17 +272,22 @@
 
         var lace = warehouse.singleton = new Lace();
 
-        lace.taglet('let', {});
-
         lace.annotation('for', {
             compile: function($el) {
 
             },
-            execute: function(annotation, taglet, scope) {
-                if(typeof data )
+            execute: function() {
+                //if(typeof data )
             }
-        })
+        });
 
+        lace.scriptlet('.', {
+            execute: function(idx, arr, raw) {
+                lace.scope()[arr[idx-1]][arr[idx+1]]
+            }
+        });
+
+        lace.taglet('let', {});
     })();
 
     if(typeof noGlobal === type.undefined) {
