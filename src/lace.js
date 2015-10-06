@@ -37,10 +37,6 @@
 
         defaults = {
             opts: {
-                scriptlet: {
-                    startWith: '${',
-                    endWith: '}'
-                }
             }
         },
 
@@ -48,8 +44,7 @@
             //singleton lace for browser end
             singleton: null,
             compiled_dom: null,
-            taglets: {},
-            scriptlets: {}
+            taglets: {}
         },
 
         defs = {
@@ -91,12 +86,11 @@
         __lace__: {
             definitions: {
                 annotations: {},
-                scriptlets: {},
                 taglets: {}
             },
             instances: {
                 annotations: {},
-                scriptlets: {},
+
                 taglets: {}
             }
         },
@@ -109,18 +103,6 @@
                 this.__lace__.definitions.annotations[name] = def;
             }
             return this.__lace__.instances.annotations[name];
-        },
-
-        scriptlet: function(name, def, extend) {
-            /* only support object type def of taglet
-             TODO: initialize support for function type def */
-            if(def == 'extend') {
-                //TODO: implement to extend existing taglet with arg extend
-            }
-            if(typeof def === type.object) {
-                this.__lace__.definitions.scriptlets[name] = def;
-            }
-            return this.__lace__.instances.scriptlets[name];
         },
 
         taglet: function(name, def, extend) {
@@ -170,25 +152,6 @@
             if(typeof this.def.execute === type.func) {
 
             }
-        }
-
-    };
-
-    var Scriptlet = function(name) {
-        this.name = name;
-        this.scriptlets = []; //support inner scriptlets
-    };
-
-    Scriptlet.prototype = {
-
-        constructor: Scriptlet,
-
-        compile: function() {
-
-        },
-
-        execute: function() {
-
         }
 
     };
@@ -248,19 +211,6 @@
         //TODO: implement ajax loading of remote templates
     };
 
-    Lace.isScriptlet = function(target) {
-        //TODO: implement pointing defaults to resolved
-        return target.indexOf(defaults.opts.scriptlet.startWith) == 0
-            && target.indexOf(defaults.opts.scriptlet.endWith) == target.length - defaults.opts.scriptlet.endWith.length
-    };
-
-    Lace.pickScriptlet = function(target) {
-        var startIdx = target.indexOf(defaults.opts.scriptlet.startWith);
-        if(startIdx > -1) {
-
-        }
-    };
-
     lace = function() {
         return warehouse.singleton;
     };
@@ -278,27 +228,6 @@
             },
             execute: function() {
                 //if(typeof data )
-            }
-        });
-
-        lace.scriptlet('.', {
-            precedence: 1,
-            compile: function(idx, operands, taglet) {
-                return function(scope) {
-                    return scope[operands[idx-1]][operands[idx+1]];
-                }
-            },
-            execute: function(idx, arr, raw) {
-
-            }
-        });
-
-        lace.scriptlet(':', {
-            precedence: 10,
-            compile: function(idx, operands, taglet) {
-                return function(scope) {
-
-                };
             }
         });
 
