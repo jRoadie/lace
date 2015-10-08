@@ -2,9 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Lace :: Browser Example</title>
+    <!-- Stylesheets -->
+    <link type="text/css" rel="stylesheet" href="/lib/semantic-ui/dist/semantic.min.css">
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="/lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/lib/semantic-ui/dist/semantic.js"></script>
+    <script type="text/javascript" src="/examples/browser/data/sample.js"></script>
+    <script type="text/javascript" src="/src/lace.js"></script>
 </head>
 <body>
-
+<div class="ui grid page">
+    <div @lace="content" class="column twelve wide">
+        <h2>Welcome Lace, in hour browser example.</h2>
+        <section>
+            Let's iterate a unordered list
+            <ul>
+                <li @for="app.users" @as="user" @idx="i">${i}. ${user.name}</li>
+            </ul>
+        </section>
+    </div>
+    <div @lace="sidebar" class="column four wide">
+        <p>This is hour sample sidebar section</p>
+    </div>
+</div>
 </body>
 </html>

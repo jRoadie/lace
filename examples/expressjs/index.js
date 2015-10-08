@@ -5,8 +5,8 @@
     var
         app = express(),
         fs = require('fs'),
-        path = require('path')
-        //lace = require('./src/lace')
+        path = require('path'),
+        lace = require('/src/lace')
     ;
 
     var config = {
@@ -17,8 +17,8 @@
         backend_dir: __dirname
     };
 
-    app.use('/lib', express.static('./node_modules'));
-    app.use('/src', express.static('./src'));
+    app.use('/lib', express.static('/node_modules'));
+    app.use('/src', express.static('/src'));
 
 
 /*
@@ -39,10 +39,8 @@
         res.sendFile(path.resolve('./index.html'))
     });
 
-    app.use('/examples/browser', express.static('./examples/browser'));
-
     app.listen(config.port, function() {
-        console.log('Running on port: ' + config.port)
+        console.log('Listening: ' + config.port)
     });
 
 })(require('express'));

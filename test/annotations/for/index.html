@@ -1,5 +1,5 @@
 <ul>
-    <li @for="users" @as="user" @idx="i">
+    <li @for="users" @as="user" @idx="i" @filter="camelCase">
         ${i} ${user.name}
     </li>
 </ul>

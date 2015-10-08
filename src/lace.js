@@ -158,6 +158,7 @@
 
     var Taglet = function(name) {
         this.name = name;
+        this.scope = {}; //local scope
         this.annotations = {};
         this.children = [];
     };
