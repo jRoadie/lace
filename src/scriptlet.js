@@ -6,7 +6,9 @@
             prefix: '${',
             suffix: '}'
         },
-        warehouse= {}
+        warehouse= {
+            scope: undefined
+        }
         ;
 
     var Scriptlet = function (opts) {
@@ -43,7 +45,12 @@
 
     };
 
-    scriptlet = function() {
+    scriptlet = function(opts) {
+
+    };
+
+    scriptlet.scope = function(data) {
+        var scope = require('../../src/scope');
 
     };
 

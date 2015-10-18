@@ -41,9 +41,11 @@
         },
 
         warehouse = {
-            //singleton lace for browser end
             singleton: null,
             compiled_dom: null,
+            laces: {
+                global: undefined
+            },
             taglets: {}
         },
 
@@ -53,28 +55,7 @@
 
     ;
 
-    var Scope = function(parent, current) {
-        this.parent = parent;
-        this.current = current;
-    };
-
-    Scope.prototype = {
-
-        constructor: Scope,
-
-        current: function() {
-
-        },
-
-        parent: function() {
-
-        }
-
-    };
-
     var Lace = function() {
-        var root_scope = new Scope({});
-
     };
 
     Lace.prototype = {
@@ -95,10 +76,14 @@
             }
         },
 
-        annotation: function(name, def) {
-            if(def === 'extend') {
-                //TODO:
-            }
+        /**
+         *
+         * @param name
+         * @param def
+         * @param isolated, true when make available only for this lace
+         * @returns {*}
+         */
+        annotation: function(name, def, isolated) {
             if(typeof def === type.object) {
                 this.__lace__.definitions.annotations[name] = def;
             }
@@ -127,79 +112,11 @@
 
     };
 
-    var Annotation = function(name, value) {
-        this.name = name;
-        this.value = value;
-    };
-
-    Annotation.prototype = {
-
-        constructor: Annotation,
-
-        key: function() {
-            //return annotation key
-        },
-
-        val: function() {
-            //return current scope value
-        },
-
-        compile: function() {
-
-        },
-
-        execute: function() {
-            if(typeof this.def.execute === type.func) {
-
-            }
+    Lace.init = function(name) {
+        if(warehouse.laces[name] === undefined) {
+            warehouse.laces[name] = new Lace();
         }
-
-    };
-
-    var Taglet = function(name) {
-        this.name = name;
-        this.scope = {}; //local scope
-        this.annotations = {};
-        this.children = [];
-    };
-
-    Taglet.prototype = {
-
-        constructor: Taglet,
-
-        __lace__: {
-            template: undefined
-        },
-
-        compile: function() {
-            var self = this;
-            self.resolveTemplate();
-            $(self.__lace__.template)
-        },
-
-        render: function(data) {
-            var self = this;
-            if(typeof self.__lace__.template === type.undefined) {
-                self.compile();
-            }
-        },
-
-        resolveTemplate: function() {
-            var def = lace;
-            if(typeof self.__lace__.template === type.string) {
-                //TODO: implement for inline template
-                return;
-            }
-            if(!self.template instanceof Array) {
-                throw new Error('Template should be inline or array of file paths');
-            }
-            for(var filepath in self.template) {
-                Lace.load(filepath, function(content) {
-                    self.template += content;
-                });
-            }
-        }
-
+        return warehouse.laces[name];
     };
 
     Lace.load = function(filepath, callback) {
@@ -212,18 +129,23 @@
         //TODO: implement ajax loading of remote templates
     };
 
-    lace = function() {
-        return warehouse.singleton;
+    lace = function(name) {
+        if(name === undefined) {
+            name = 'global';
+        }
+        return Lace.init(name);
     };
 
     /**
-     * initializing lace itself
+     * initializing lace global
      * */
     (function() {
 
-        var lace = warehouse.singleton = new Lace();
+        var lace = lace();
 
-        lace.annotation('for', {
+        lace.taglet('let', {});
+
+        lace.annotation('import', {
             compile: function($el) {
 
             },
@@ -232,7 +154,6 @@
             }
         });
 
-        lace.taglet('let', {});
     })();
 
     if(typeof noGlobal === type.undefined) {

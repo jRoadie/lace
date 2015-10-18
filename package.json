@@ -23,6 +23,7 @@
   "dependencies": {
     "cheerio": "^0.19.0",
     "express": "^4.13.3",
-    "jquery": "^2.1.4"
+    "jquery": "^2.1.4",
+    "lodash": "^3.10.1"
   }
 }
