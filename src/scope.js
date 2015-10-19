@@ -1,6 +1,4 @@
-(function () {
-
-    var util = require('../../src/util');
+(function (global) {
 
     var
         current_scope = undefined,
@@ -50,6 +48,6 @@
         current_scope.valOf(variable)
     };
 
-    module.exports.scope = scope;
+    global.scope = scope;
 
-})();
+})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : window);

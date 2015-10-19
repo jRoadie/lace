@@ -1,4 +1,4 @@
-(function() {
+(function(global) {
 
     var Annotation = function(name, value) {
         this.name = name;
@@ -34,6 +34,6 @@
     };
 
 
-    module.exports.annotation = annotation;
+    global.annotation = annotation;
 
-})();
+})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : window);
