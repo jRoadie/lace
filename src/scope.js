@@ -1,53 +1,68 @@
 (function (global) {
 
-    var
-        current_scope = undefined,
-        warehouse = {}
-        ;
+    'use strict';
 
-    var Scope = function (parent, data) {
-        this.parent = parent;
-        this.data = data;
-    };
+    var noWindow = typeof Window === 'undefined';
 
-    Scope.prototype = {
-
-        constructor: Scope,
-
-        create: function (data) {
-            current_scope = new Scope(current_scope, data);
-        },
-
-        valOf: function (variable) {
-            var scope = this;
-            var vars = variable.split('.');
-            if(scope.parent === undefined) return;
-            if(scope.data[vars[0]] === undefined) {
-                //lookup in parent scope
-                scope = scope.parent.valOf(vars[0]);
-            }
-            if(scope === undefined) return;
-            var val = scope.data[vars[0]];
-            for(var i = 1; i < vars; i++) {
-                val = val[vars[i]];
-            }
-            return val;
+    var rqr = function (moduleName, moduleExported) {
+        if (noWindow) {
+            return moduleExported ? require(moduleExported) : require(moduleName);
         }
-
+        return global[moduleName];
     };
 
-    Scope.init = function (data) {
-        current_scope = new Scope(undefined, data);
-    };
+    (function () {
 
-    var scope = function (data) {
-        Scope.init(data);
-    };
+        var
+            current_scope = undefined,
+            warehouse = {}
+            ;
 
-    scope.valOf = function (variable) {
-        current_scope.valOf(variable)
-    };
+        var Scope = function (parent, data) {
+            this.parent = parent;
+            this.data = data;
+        };
 
-    global.scope = scope;
+        Scope.prototype = {
 
-})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : window);
+            constructor: Scope,
+
+            create: function (data) {
+                current_scope = new Scope(current_scope, data);
+            },
+
+            valOf: function (variable) {
+                var scope = this;
+                var vars = variable.split('.');
+                if (scope.parent === undefined) return;
+                if (scope.data[vars[0]] === undefined) {
+                    //lookup in parent scope
+                    scope = scope.parent.valOf(vars[0]);
+                }
+                if (scope === undefined) return;
+                var val = scope.data[vars[0]];
+                for (var i = 1; i < vars; i++) {
+                    val = val[vars[i]];
+                }
+                return val;
+            }
+
+        };
+
+        Scope.init = function (data) {
+            current_scope = new Scope(undefined, data);
+        };
+
+        var scope = function (data) {
+            Scope.init(data);
+        };
+
+        scope.valOf = function (variable) {
+            current_scope.valOf(variable)
+        };
+
+        global.scope = scope;
+
+    })();
+
+})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : this);

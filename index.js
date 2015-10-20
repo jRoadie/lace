@@ -31,10 +31,10 @@
 
 
 
-    app.valOf('/', function(req, res) {
+    app.get('/', function(req, res) {
         console.log(new Date());
         fs.readFile(path.resolve('./index.html'), {}, function(err, content) {
-            lace(content.toString())
+            //lace(content.toString())
         });
         res.sendFile(path.resolve('./index.html'))
     });

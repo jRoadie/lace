@@ -1,165 +1,133 @@
-(function(global, engine) {
-    if(typeof module === "object" && typeof module.exports === "object") {
-        module.exports = global.document ? engine(global.jQuery, true) :
-            function() {
-                var cheerio = require('cheerio');
-                cheerio.fs = require('fs');
-                if(!cheerio) {
-                    throw new Error('Lace requires cheerio installed.')
-                }
-                return engine(cheerio, undefined, true);
-            }();
-    } else {
-        //this 'else' block will render in browser end
-        if(!global.jQuery) {
-            throw new Error('Lace requires jQuery loaded.')
-        }
-        engine(global.jQuery);
-    }
-// Pass this if window is not defined yet
-}(typeof window === "undefined" ? this : window, function($, noGlobal, isServer) {
+(function (global) {
 
     'use strict';
 
-    var
-        lace,
+    var noWindow = typeof Window === 'undefined';
 
-        version = '1.0.0',
-
-        type = {
-            undefined: typeof undefined,
-            object: typeof {},
-            func: typeof function() {
-            },
-            string: typeof "",
-            number: typeof 0
-        },
-
-        defaults = {
-            opts: {
-            }
-        },
-
-        warehouse = {
-            singleton: null,
-            compiled_dom: null,
-            laces: {
-                global: undefined
-            },
-            taglets: {}
-        },
-
-        defs = {
-
+    var rqr = function (moduleName, moduleExported) {
+        if (noWindow) {
+            return moduleExported ? require(moduleExported) : require(moduleName);
         }
-
-    ;
-
-    var Lace = function() {
+        return global[moduleName];
     };
 
-    Lace.prototype = {
+    (function () {
 
-        version: version,
+        var
+            lace,
 
-        constructor: Lace,
+            version = '1.0.0',
 
-        __lace__: {
-            definitions: {
-                annotations: {},
-                taglets: {}
+            TYPE = {
+                undefined: typeof undefined,
+                object: typeof {},
+                func: typeof function() {},
+                string: typeof "",
+                number: typeof 0
             },
-            instances: {
-                annotations: {},
 
+            defaults = {
+                opts: {
+                }
+            },
+
+            warehouse = {
+                singleton: null,
+                compiled_dom: null,
+                laces: {
+                    global: undefined
+                },
                 taglets: {}
             }
-        },
+            ;
+
+        var Lace = function(name) {
+            this.name = name;
+        };
+
+        Lace.prototype = {
+
+            version: version,
+
+            constructor: Lace,
+
+            __lace__: {
+                annotations: {
+                    definitions: {},
+                    instances: {}
+                },
+                taglets: {
+                    definitions: {},
+                    instances: {}
+                }
+            },
+
+            /**
+             *
+             * @param name
+             * @param def
+             * @param isolated, true when make available only for this lace
+             * @returns {*}
+             */
+            annotation: function(name, def, isolated) {
+                if(typeof def !== TYPE.undefined) {
+                    this.definition('annotation', name, def);
+                }
+                return this.instance('annotation', name);
+            },
+
+            taglet: function(name, def, isolated) {
+                if(typeof def !== TYPE.undefined) {
+                    this.definition('taglet', name, def);
+                }
+                return this.instance('taglet', name);
+            },
+
+            compile: function() {
+
+            },
+
+            render: function(html, data) {
+
+            },
+            
+            definition: function (type, name, def) {
+                if(def !== TYPE.undefined) this.__lace__[type + 's']['definitions'][name] = def;
+                return this.__lace__[type + 's'][name]; 
+            },
+            
+            instance: function (type, name, inst) {
+                if(inst !== TYPE.undefined) this.__lace__[type + 's']['instances'][name] = inst;
+                return this.__lace__[type + 's']['instances'][name];
+            }
+
+        };
+
+        Lace.init = function(name) {
+            if(typeof warehouse.laces[name] === TYPE.undefined) {
+                warehouse.laces[name] = new Lace(name);
+            }
+            return warehouse.laces[name];
+        };
 
         /**
-         *
+         * Lace module function
          * @param name
-         * @param def
-         * @param isolated, true when make available only for this lace
-         * @returns {*}
+         * @returns {Function|*}
          */
-        annotation: function(name, def, isolated) {
-            if(typeof def === type.object) {
-                this.__lace__.definitions.annotations[name] = def;
+        lace = function(name) {
+            if(name === undefined) {
+                name = 'global';
             }
-            return this.__lace__.instances.annotations[name];
-        },
+            return Lace.init(name);
+        };
 
-        taglet: function(name, def, extend) {
-            /* only support object type def of taglet
-             TODO: initialize support for function type def */
-            if(def == 'extend') {
-                //TODO: implement to extend existing taglet with arg extend
-            }
-            if(typeof def === type.object) {
-                this.__lace__.definitions.taglets[name] = def;
-            }
-            return this.__lace__.instances.taglets[name];
-        },
+        //initialize global lace object : glace
+        global.glace = lace();
 
-        compile: function() {
-
-        },
-
-        render: function(html, data) {
-
-        }
-
-    };
-
-    Lace.init = function(name) {
-        if(warehouse.laces[name] === undefined) {
-            warehouse.laces[name] = new Lace();
-        }
-        return warehouse.laces[name];
-    };
-
-    Lace.load = function(filepath, callback) {
-        if(isServer) {
-            $.fs.readFile(filepath, function(err, bytes) {
-                if(err) throw err;
-                callback(bytes.toString());
-            })
-        }
-        //TODO: implement ajax loading of remote templates
-    };
-
-    lace = function(name) {
-        if(name === undefined) {
-            name = 'global';
-        }
-        return Lace.init(name);
-    };
-
-    /**
-     * initializing lace global
-     * */
-    (function() {
-
-        var lace = lace();
-
-        lace.taglet('let', {});
-
-        lace.annotation('import', {
-            compile: function($el) {
-
-            },
-            execute: function() {
-                //if(typeof data )
-            }
-        });
+        //export lace module
+        global.lace = lace;
 
     })();
 
-    if(typeof noGlobal === type.undefined) {
-        window.lace = lace;
-    }
-
-    return lace;
-
-}));
+})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : this);

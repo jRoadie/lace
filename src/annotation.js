@@ -1,39 +1,54 @@
-(function(global) {
+(function (global) {
 
-    var Annotation = function(name, value) {
-        this.name = name;
-        this.value = value;
-    };
+    'use strict';
 
-    Annotation.prototype = {
+    var noWindow = typeof Window === 'undefined';
 
-        constructor: Annotation,
-
-        key: function() {
-            //return annotation key
-        },
-
-        val: function() {
-            //return current scope value
-        },
-
-        compile: function() {
-
-        },
-
-        execute: function() {
-            if(typeof this.def.execute === type.func) {
-
-            }
+    var rqr = function (moduleName, moduleExported) {
+        if (noWindow) {
+            return moduleExported ? require(moduleExported) : require(moduleName);
         }
-
+        return global[moduleName];
     };
 
-    var annotation = function(name, def) {
+    (function () {
 
-    };
+        var Annotation = function(name, value) {
+            this.name = name;
+            this.value = value;
+        };
+
+        Annotation.prototype = {
+
+            constructor: Annotation,
+
+            key: function() {
+                //return annotation key
+            },
+
+            val: function() {
+                //return current scope value
+            },
+
+            compile: function() {
+
+            },
+
+            execute: function() {
+                if(typeof this.def.execute === type.func) {
+
+                }
+            }
+
+        };
+
+        var annotation = function(name, def) {
+
+        };
 
 
-    global.annotation = annotation;
+        global.annotation = annotation;
 
-})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : window);
+    })();
+
+})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : this);
