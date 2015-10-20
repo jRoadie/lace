@@ -2,13 +2,13 @@
 
     'use strict';
 
-    var noWindow = typeof Window === 'undefined';
+    global.isWindow = typeof Window === 'undefined';
 
     var rqr = function (moduleName, moduleExported) {
-        if (noWindow) {
-            return moduleExported ? require(moduleExported) : require(moduleName);
+        if (global.isWindow) {
+            return global[moduleName];
         }
-        return global[moduleName];
+        return moduleExported ? require(moduleExported) : require(moduleName);
     };
 
     (function (lace) {
@@ -39,10 +39,10 @@
             }
         };
 
-        for(var fn in utils) {
-
+        for(var util in utils) {
+            lace[util] = utils[util];
         }
 
-    })(rqr('lace')());
+    })(rqr('lace'));
 
 })(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : this);
