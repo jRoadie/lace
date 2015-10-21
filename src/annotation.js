@@ -1,54 +1,49 @@
-(function (global) {
+(function (global, factory) {
 
-    'use strict';
-
-    var noWindow = typeof Window === 'undefined';
+    global.isWindow = typeof Window !== 'undefined' && global instanceof Window;
 
     var rqr = function (moduleName, moduleExported) {
-        if (noWindow) {
-            return moduleExported ? require(moduleExported) : require(moduleName);
-        }
-        return global[moduleName];
+        return global.isWindow ? global[moduleName] : (moduleExported ? require(moduleExported) : require(moduleName));
     };
 
-    (function () {
+    factory(global);
 
-        var Annotation = function(name, value) {
-            this.name = name;
-            this.value = value;
-        };
+})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : this, function (global) {
 
-        Annotation.prototype = {
+    var Annotation = function(name, value) {
+        this.name = name;
+        this.value = value;
+    };
 
-            constructor: Annotation,
+    Annotation.prototype = {
 
-            key: function() {
-                //return annotation key
-            },
+        constructor: Annotation,
 
-            val: function() {
-                //return current scope value
-            },
+        key: function() {
+            //return annotation key
+        },
 
-            compile: function() {
+        val: function() {
+            //return current scope value
+        },
 
-            },
+        compile: function() {
 
-            execute: function() {
-                if(typeof this.def.execute === type.func) {
+        },
 
-                }
+        execute: function() {
+            if(typeof this.def.execute === type.func) {
+
             }
+        }
 
-        };
+    };
 
-        var annotation = function(name, def) {
+    var annotation = function(name, def) {
+        console.log(9785464)
+    };
 
-        };
 
+    module.exports = annotation;
 
-        global.annotation = annotation;
-
-    })();
-
-})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : this);
+});

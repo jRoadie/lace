@@ -30,7 +30,7 @@
 */
 
 
-
+    var annotation = require('./src/annotation');
     app.get('/', function(req, res) {
         console.log(new Date());
         fs.readFile(path.resolve('./index.html'), {}, function(err, content) {

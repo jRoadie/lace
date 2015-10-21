@@ -1,29 +1,24 @@
-(function (global) {
+(function (global, factory) {
 
-    'use strict';
-
-    var noWindow = typeof Window === 'undefined';
+    global.isWindow = typeof Window !== 'undefined' && global instanceof Window;
 
     var rqr = function (moduleName, moduleExported) {
-        if (noWindow) {
-            return moduleExported ? require(moduleExported) : require(moduleName);
-        }
-        return global[moduleName];
+        return global.isWindow ? global[moduleName] : (moduleExported ? require(moduleExported) : require(moduleName));
     };
 
-    (function (glace) {
+    factory(global, rqr('lace')());//empty param in lace module dictates as global lace object called glace
 
-        glace.taglet('let', {});
+})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : this, function (global, glace) {
 
-        glace.annotation('import', {
-            compile: function($el) {
+    glace.taglet('let', {});
 
-            },
-            execute: function() {
-                //if(typeof data )
-            }
-        });
+    glace.annotation('import', {
+        compile: function ($el) {
 
-    })(rqr('lace')()); //empty param in lace module dictates as global lace object called glace
+        },
+        execute: function () {
+            //if(typeof data )
+        }
+    });
 
-})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : this);
+});
