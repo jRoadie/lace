@@ -5,7 +5,7 @@ var assert = require('assert');
 var
     fs = require('fs'),
     cheerio = require('cheerio'),
-    scriptlet = require('../../src/scriptlet')
+    scriptlet = require('.././scriptlet')
     ;
 
 

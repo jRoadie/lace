@@ -3,7 +3,7 @@
 var
     fs = require('fs'),
     cheerio = require('cheerio'),
-    scope = require('../../src/scope.js')
+    scope = require('.././scope.js')
     ;
 
 

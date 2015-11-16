@@ -50,7 +50,7 @@
     };
 
     scriptlet.scope = function(data) {
-        var scope = require('../../src/scope');
+        var scope = require('../../src2.old/scope');
 
     };
 

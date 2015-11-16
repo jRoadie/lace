@@ -6,7 +6,7 @@
         app = express(),
         fs = require('fs'),
         path = require('path'),
-        lace = require('/src/lace')
+        lace = require('/src2.old/lace')
     ;
 
     var config = {
@@ -18,7 +18,7 @@
     };
 
     app.use('/lib', express.static('/node_modules'));
-    app.use('/src', express.static('/src'));
+    app.use('/src2.old', express.static('/src2.old'));
 
 
 /*

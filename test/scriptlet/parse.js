@@ -1,4 +1,4 @@
-var scriptlet = require('../../src/scriptlet');
+var scriptlet = require('.././scriptlet');
 
 var testcases = {
     one: '${x + 1}'
