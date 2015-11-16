@@ -18,7 +18,7 @@
     };
 
     app.use('/lib', express.static('./node_modules'));
-    app.use('/src.old', express.static('./src.old'));
+    app.use('/dist', express.static('./dist'));
 
 
 /*
@@ -30,7 +30,7 @@
 */
 
 
-    var annotation = require('./src/annotation');
+    //var annotation = require('./src/annotation');
     app.get('/', function(req, res) {
         console.log(new Date());
         fs.readFile(path.resolve('./index.html'), {}, function(err, content) {

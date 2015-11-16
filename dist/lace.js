@@ -12,9 +12,9 @@ var Annotation = (function () {
         console.log(789);
     }
 
-    Annotation.prototype.getNameX = function getNameX() {
-        console.log(456);
-    };
+    Annotation.prototype.compile = function compile() {};
+
+    Annotation.prototype.execute = function execute() {};
 
     return Annotation;
 })();
@@ -22,18 +22,41 @@ var Annotation = (function () {
 exports.Annotation = Annotation;
 
 },{}],2:[function(require,module,exports){
-"use strict";
+'use strict';
+
+var _taglet = require('./taglet');
+
+var taglet = new _taglet.Taglet('Me');
+
+taglet.compile();
+
+var TagletW = _taglet.Taglet;
+
+},{"./taglet":3}],3:[function(require,module,exports){
+'use strict';
 
 exports.__esModule = true;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var Taglet = function Taglet(name) {
-    _classCallCheck(this, Taglet);
+var Taglet = (function () {
+    function Taglet(name) {
+        _classCallCheck(this, Taglet);
 
-    this.name = name;
-};
+        this.name = name;
+    }
+
+    Taglet.prototype.compile = function compile() {
+        console.log('compiling....');
+    };
+
+    Taglet.prototype.render = function render() {
+        console.log('rendering...');
+    };
+
+    return Taglet;
+})();
 
 exports.Taglet = Taglet;
 
-},{}]},{},[1,2]);
+},{}]},{},[1,2,3]);

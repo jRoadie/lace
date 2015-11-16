@@ -4,8 +4,12 @@ class Annotation {
         console.log(789)
     }
 
-    getNameX() {
-        console.log(456)
+    compile() {
+
+    }
+
+    execute() {
+
     }
 }
 
