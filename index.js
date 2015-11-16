@@ -30,11 +30,11 @@
 */
 
 
-
-    app.valOf('/', function(req, res) {
+    var annotation = require('./src/annotation');
+    app.get('/', function(req, res) {
         console.log(new Date());
         fs.readFile(path.resolve('./index.html'), {}, function(err, content) {
-            lace(content.toString())
+            //lace(content.toString())
         });
         res.sendFile(path.resolve('./index.html'))
     });

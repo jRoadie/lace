@@ -1,59 +1,74 @@
-(function () {
+(function (global) {
 
-    var
-        scriptlet,
-        opts = {
-            prefix: '${',
-            suffix: '}'
-        },
-        warehouse= {
-            scope: undefined
+    'use strict';
+
+    var noWindow = typeof Window === 'undefined';
+
+    var rqr = function (moduleName, moduleExported) {
+        if (noWindow) {
+            return moduleExported ? require(moduleExported) : require(moduleName);
         }
-        ;
-
-    var Scriptlet = function (opts) {
-        //TODO: extend default opts with @param opts
+        return global[moduleName];
     };
 
-    Scriptlet.prototype = {
+    (function () {
 
-        constructor: Scriptlet,
-
-        compile: function () {
-
-        },
-
-        execute: function (expr) {
-            var REX_ALPHANUMERIC = /([0-9a-zA-Z$_.]+)/g; //only alphanumeric with $, _ and .
-            var REX_START_WITH_NUMBER = /^[0-9#].*$/; //starts with digit or #
-            var KEY_WORDS = ['this', 'var']; //TODO: add all keywords
-            var listOfVars = expr.match(REX_ALPHANUMERIC);
-            if(listOfVars) {
-                for(var v in listOfVars) {
-                    if(KEY_WORDS.contains(v) || REX_START_WITH_NUMBER.test(v)) {
-                        continue;
-                    }
-                    expr.replace(new RegExp(v, 'g'), '__scope.valOf(' + v + ')');
-                }
+        var
+            scriptlet,
+            opts = {
+                prefix: '${',
+                suffix: '}'
+            },
+            warehouse= {
+                scope: undefined
             }
-            return (new Function('__scope', expr))(this)
-        }
+            ;
 
-    };
+        var Scriptlet = function (opts) {
+            //TODO: extend default opts with @param opts
+        };
 
-    Scriptlet.parse = function (text) {
+        Scriptlet.prototype = {
 
-    };
+            constructor: Scriptlet,
 
-    scriptlet = function(opts) {
+            compile: function () {
 
-    };
+            },
 
-    scriptlet.scope = function(data) {
-        var scope = require('../../src.old/scope');
+            execute: function (expr) {
+                var REX_ALPHANUMERIC = /([0-9a-zA-Z$_.]+)/g; //only alphanumeric with $, _ and .
+                var REX_START_WITH_NUMBER = /^[0-9#].*$/; //starts with digit or #
+                var KEY_WORDS = ['this', 'var']; //TODO: add all keywords
+                var listOfVars = expr.match(REX_ALPHANUMERIC);
+                if(listOfVars) {
+                    for(var v in listOfVars) {
+                        if(KEY_WORDS.contains(v) || REX_START_WITH_NUMBER.test(v)) {
+                            continue;
+                        }
+                        expr.replace(new RegExp(v, 'g'), '__scope.valOf(' + v + ')');
+                    }
+                }
+                return (new Function('__scope', expr))(this)
+            }
 
-    };
+        };
 
-    module.exports = Scriptlet;
+        Scriptlet.parse = function (text) {
 
-})();
+        };
+
+        scriptlet = function(opts) {
+
+        };
+
+        scriptlet.scope = function(data) {
+            var scope = require('../../src/scope');
+
+        };
+
+        global.scriptlet = scriptlet;
+
+    })();
+
+})(typeof module === 'object' && typeof module.exports === 'object' ? module.exports : this);
