@@ -13,13 +13,13 @@ module.exports = function(grunt) {
                     // if the source file has an extension of es6 then
                     // we change the name of the source file accordingly.
                     // The result file's extension is always .js
-                    "./dist/lace.js": ["./src2/**/*.js"]
+                    "./dist/lace.js": ["./src/**/*.js"]
                 }
             }
         },
         watch: {
             scripts: {
-                files: ["./src2/**/*.js"],
+                files: ["./src/**/*.js"],
                 tasks: ["browserify"]
             }
         }
