@@ -1,17 +1,16 @@
+import { $, util } from './util-node'
 import { Taglet } from './taglet'
 
 var
-    lace,
 
     version = '1.0.0',
 
     Type = {
         UNDEFINED: typeof undefined,
-        object: typeof {},
-        function: typeof (function () {
-        }),
-        string: typeof "",
-        number: typeof 0
+        OBJECT: typeof {},
+        FUNCTION: typeof (function () {}),
+        STRING: typeof "",
+        NUMBER: typeof 0
     },
 
     defaults = {
@@ -42,17 +41,17 @@ class Lace {
      * @returns {*}
      */
     annotation(name, def, global = false) {
-        if (typeof def !== Type.UNDEFINED) {
+        /*if (typeof def !== Type.UNDEFINED) {
             this.definition('annotation', name, def);
         }
-        return this.instance('annotation', name);
+        return this.instance('annotation', name);*/
     }
 
     taglet(name, def, global = false) {
-        if (typeof def !== Type.UNDEFINED) {
+        /*if (typeof def !== Type.UNDEFINED) {
             this.definition('taglet', name, def);
         }
-        return this.instance('taglet', name);
+        return this.instance('taglet', name);*/
     }
 
     compile() {
@@ -60,7 +59,7 @@ class Lace {
     }
 
     render(html, data) {
-
+        console.log($(html));
     }
 
     definition(type, name, def) {
@@ -87,11 +86,12 @@ Lace.init = function (name) {
  * @param name
  * @returns {Function|*}
  */
-lace = function (name) {
-    if (typeof name === Type.UNDEFINED) {
-        name = 'global';
+export default function() {
+    return function(name) {
+        if (typeof name === Type.UNDEFINED) {
+            name = 'global';
+        }
+        console.log('helllllllllll');
+        return Lace.init(name);
     }
-    return Lace.init(name);
-};
-
-export { lace }
+}

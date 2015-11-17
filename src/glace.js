@@ -1,8 +1,15 @@
-import { lace } from './lace'
+import lace from './lace'
 
-var glace = lace();
+var glace = lace()(); //TODO: lace is in extra wrapper function due to node module system require()
 
-glace.taglet('let', {});
+glace.taglet('let', {
+    compile: function() {
+
+    },
+    render: function() {
+
+    }
+});
 
 glace.annotation('render', {
     compile: function ($el) {
