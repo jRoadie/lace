@@ -24,15 +24,126 @@ exports.Annotation = Annotation;
 },{}],2:[function(require,module,exports){
 'use strict';
 
+var _lace = require('./lace');
+
+var glace = _lace.lace();
+
+glace.taglet('let', {});
+
+glace.annotation('render', {
+    compile: function compile($el) {},
+    execute: function execute() {
+        //if(typeof data )
+    }
+});
+
+glace.annotation('layout', {
+    compile: function compile($el) {},
+    execute: function execute() {}
+});
+
+},{"./lace":3}],3:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
 var _taglet = require('./taglet');
 
-var taglet = new _taglet.Taglet('Me');
+var lace,
+    version = '1.0.0',
+    Type = {
+    UNDEFINED: typeof undefined,
+    object: typeof {},
+    'function': typeof function () {},
+    string: typeof "",
+    number: typeof 0
+},
+    defaults = {
+    opts: {}
+},
+    warehouse = {
+    singleton: null,
+    compiled_dom: null,
+    laces: {
+        global: undefined
+    },
+    taglets: {}
+};
 
-taglet.compile();
+var Lace = (function () {
+    function Lace(name) {
+        _classCallCheck(this, Lace);
 
-var TagletW = _taglet.Taglet;
+        this.name = name;
+    }
 
-},{"./taglet":3}],3:[function(require,module,exports){
+    /**
+     *
+     * @param name
+     * @param def
+     * @param global, true when make available only for this lace
+     * @returns {*}
+     */
+
+    Lace.prototype.annotation = function annotation(name, def) {
+        var global = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+        if (typeof def !== Type.UNDEFINED) {
+            this.definition('annotation', name, def);
+        }
+        return this.instance('annotation', name);
+    };
+
+    Lace.prototype.taglet = function taglet(name, def) {
+        var global = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+        if (typeof def !== Type.UNDEFINED) {
+            this.definition('taglet', name, def);
+        }
+        return this.instance('taglet', name);
+    };
+
+    Lace.prototype.compile = function compile() {};
+
+    Lace.prototype.render = function render(html, data) {};
+
+    Lace.prototype.definition = function definition(type, name, def) {
+        if (def !== Type.UNDEFINED) this.__lace__[type + 's']['definitions'][name] = def;
+        return this.__lace__[type + 's'][name];
+    };
+
+    Lace.prototype.instance = function instance(type, name, inst) {
+        if (inst !== Type.UNDEFINED) this.__lace__[type + 's']['instances'][name] = inst;
+        return this.__lace__[type + 's']['instances'][name];
+    };
+
+    return Lace;
+})();
+
+Lace.init = function (name) {
+    if (typeof warehouse.laces[name] === Type.UNDEFINED) {
+        warehouse.laces[name] = new Lace(name);
+    }
+    return warehouse.laces[name];
+};
+
+/**
+ * Lace module function
+ * @param name
+ * @returns {Function|*}
+ */
+exports.lace = lace = function (name) {
+    if (typeof name === Type.UNDEFINED) {
+        name = 'global';
+    }
+    return Lace.init(name);
+};
+
+exports.lace = lace;
+
+},{"./taglet":4}],4:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -59,4 +170,4 @@ var Taglet = (function () {
 
 exports.Taglet = Taglet;
 
-},{}]},{},[1,2,3]);
+},{}]},{},[1,2,3,4]);

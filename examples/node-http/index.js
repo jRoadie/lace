@@ -1,8 +1,13 @@
 var http = require('http'),
-    fs = require('fs');
+    fs = require('fs'),
+    path = require('path'),
+    lace = require('../../dist/lace'),
+    glace = lace(),
+    mylace = lace('mylace');
 
 var routes = {
     '/index': function () {
+
         return "<h1>Hello World</h1>";
     }
 };
