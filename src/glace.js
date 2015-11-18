@@ -1,6 +1,6 @@
 import lace from './lace'
 
-var glace = lace()(); //TODO: lace is in extra wrapper function due to node module system require()
+var glace = lace();
 
 glace.taglet('let', {
     compile: function() {

@@ -5,8 +5,8 @@
     var
         app = express(),
         fs = require('fs'),
-        path = require('path')
-        //lace = require('./src.old/lace')
+        path = require('path'),
+        lace = require('./dist/lace')
     ;
 
     var config = {

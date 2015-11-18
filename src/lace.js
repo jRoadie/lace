@@ -86,12 +86,14 @@ Lace.init = function (name) {
  * @param name
  * @returns {Function|*}
  */
-export default function() {
-    return function(name) {
-        if (typeof name === Type.UNDEFINED) {
-            name = 'global';
-        }
-        console.log('helllllllllll');
-        return Lace.init(name);
+function lace(name) {
+    if (typeof name === Type.UNDEFINED) {
+        name = 'global';
     }
+    console.log('helllllllllll');
+    var taglet = new Taglet('op');
+    taglet.render();
+    return Lace.init(name);
 }
+
+export { lace }
