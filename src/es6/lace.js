@@ -90,9 +90,6 @@ function lace(name) {
     if (typeof name === Type.UNDEFINED) {
         name = 'global';
     }
-    console.log('helllllllllll');
-    var taglet = new Taglet('op');
-    taglet.render();
     return Lace.init(name);
 }
 

@@ -7,9 +7,9 @@ module.exports = function(grunt) {
             dist: {
                 files: [{
                     expand: true,
-                    cwd: 'src',
+                    cwd: 'src/es6',
                     src: ['**/*.js'],
-                    dest: 'dist',
+                    dest: 'dist/es6',
                     ext: '.js'
                 }]
             }
@@ -27,13 +27,13 @@ module.exports = function(grunt) {
                     // if the source file has an extension of es6 then
                     // we change the name of the source file accordingly.
                     // The result file's extension is always .js
-                    "dist/lace.js": ["src/**/*.js"]
+                    "dist/lace.es5.js": ["src/**/*.js"]
                 }
             }
         },
         watch: {
             scripts: {
-                files: ["src/**/*.js"],
+                files: ["src/es6/*.js"],
                 tasks: ["babel"]
             }
         }
