@@ -6,29 +6,14 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-exports.default = function (name) {
-    if ((typeof name === 'undefined' ? 'undefined' : _typeof(name)) === Type.UNDEFINED) {
-        name = 'global';
-    }
-    return Lace.init(name);
-};
-
 var _utilNode = require('./util-node');
 
 var _taglet = require('./taglet');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
-
-var version = '1.0.0',
-    Type = {
-    UNDEFINED: typeof undefined === 'undefined' ? 'undefined' : _typeof(undefined),
-    OBJECT: _typeof({}),
-    FUNCTION: _typeof(function () {}),
-    STRING: _typeof(""),
-    NUMBER: _typeof(0)
-},
+var lace,
+    version = '1.0.0',
     defaults = {
     opts: {}
 },
@@ -36,7 +21,7 @@ var version = '1.0.0',
     singleton: null,
     compiled_dom: null,
     laces: {
-        global: undefined
+        global: null
     },
     taglets: {}
 };
@@ -87,29 +72,43 @@ var Lace = (function () {
     }, {
         key: 'definition',
         value: function definition(type, name, def) {
-            if (def !== Type.UNDEFINED) this.__lace__[type + 's']['definitions'][name] = def;
-            return this.__lace__[type + 's'][name];
+            return this.__lace__[type]['definitions'][name] = def || this.__lace__[type]['definitions'][name];
         }
     }, {
         key: 'instance',
         value: function instance(type, name, inst) {
-            if (inst !== Type.UNDEFINED) this.__lace__[type + 's']['instances'][name] = inst;
-            return this.__lace__[type + 's']['instances'][name];
+            return this.__lace__[type]['instances'][name] = inst || this.__lace__[type]['instances'][name];
         }
     }]);
 
     return Lace;
 })();
 
-Lace.init = function (name) {
-    if (_typeof(warehouse.laces[name]) === Type.UNDEFINED) {
-        warehouse.laces[name] = new Lace(name);
+//TODO: should I declare in prototype?
+
+Lace.prototype.__lace__ = {
+    annotation: {
+        definitions: {},
+        instances: {}
+    },
+    taglet: {
+        definitions: {},
+        instances: {}
     }
-    return warehouse.laces[name];
+};
+
+Lace.init = function (name) {
+    return warehouse.laces[name] = warehouse.laces[name] || new Lace(name);
 };
 
 /**
- * Lace module function
+ * MODULE function for lace
  * @param name
  * @returns {Function|*}
  */
+lace = function (name) {
+    name = name || 'global';
+    return Lace.init(name);
+};
+
+exports.default = lace;

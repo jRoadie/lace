@@ -7,14 +7,6 @@ var
 
     version = '1.0.0',
 
-    Type = {
-        UNDEFINED: typeof undefined,
-        OBJECT: typeof {},
-        FUNCTION: typeof (function () {}),
-        STRING: typeof "",
-        NUMBER: typeof 0
-    },
-
     defaults = {
         opts: {}
     },
@@ -23,7 +15,7 @@ var
         singleton: null,
         compiled_dom: null,
         laces: {
-            global: Type.UNDEFINED
+            global: null
         },
         taglets: {}
     }
@@ -65,22 +57,29 @@ class Lace {
     }
 
     definition(type, name, def) {
-        if (def !== Type.UNDEFINED) this.__lace__[type + 's']['definitions'][name] = def;
-        return this.__lace__[type + 's'][name];
+        return this.__lace__[type]['definitions'][name] = def || this.__lace__[type]['definitions'][name];
     }
 
     instance(type, name, inst) {
-        if (inst !== Type.UNDEFINED) this.__lace__[type + 's']['instances'][name] = inst;
-        return this.__lace__[type + 's']['instances'][name];
+        return this.__lace__[type]['instances'][name] = inst || this.__lace__[type]['instances'][name];
     }
 
 }
 
-Lace.init = function (name) {
-    if (typeof warehouse.laces[name] === Type.UNDEFINED) {
-        warehouse.laces[name] = new Lace(name);
+//TODO: should I declare in prototype?
+Lace.prototype.__lace__ = {
+    annotation: {
+        definitions: {},
+        instances: {}
+    },
+    taglet: {
+        definitions: {},
+        instances: {}
     }
-    return warehouse.laces[name];
+};
+
+Lace.init = function (name) {
+    return warehouse.laces[name] = warehouse.laces[name] || new Lace(name);
 };
 
 /**
@@ -89,9 +88,7 @@ Lace.init = function (name) {
  * @returns {Function|*}
  */
 lace = function(name) {
-    if(typeof name === Type.UNDEFINED) {
-        name = 'global';
-    }
+    name = name || 'global';
     return Lace.init(name);
 };
 
