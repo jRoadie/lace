@@ -3,6 +3,8 @@ import { Taglet } from './taglet'
 
 var
 
+    lace,
+
     version = '1.0.0',
 
     Type = {
@@ -21,7 +23,7 @@ var
         singleton: null,
         compiled_dom: null,
         laces: {
-            global: undefined
+            global: Type.UNDEFINED
         },
         taglets: {}
     }
@@ -86,9 +88,11 @@ Lace.init = function (name) {
  * @param name
  * @returns {Function|*}
  */
-export default function (name) {
-    if (typeof name === Type.UNDEFINED) {
+lace = function(name) {
+    if(typeof name === Type.UNDEFINED) {
         name = 'global';
     }
     return Lace.init(name);
-}
+};
+
+export default lace;
