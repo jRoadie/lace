@@ -82,7 +82,7 @@ Lace.init = function (name) {
 };
 
 /**
- * Lace module function
+ * MODULE function for lace
  * @param name
  * @returns {Function|*}
  */
