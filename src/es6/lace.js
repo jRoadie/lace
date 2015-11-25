@@ -86,11 +86,9 @@ Lace.init = function (name) {
  * @param name
  * @returns {Function|*}
  */
-function lace(name) {
+export default function (name) {
     if (typeof name === Type.UNDEFINED) {
         name = 'global';
     }
     return Lace.init(name);
 }
-
-export { lace }

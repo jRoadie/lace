@@ -1,7 +1,9 @@
-var http = require('http'),
+var
+    http = require('http'),
     fs = require('fs'),
     path = require('path'),
-    lace = require('../../dist/lace');
+    conf = require('../../config'),
+    lace = require(conf.dir.dist + '/lace');
     //glace = lace();
 
 var controllers = {
