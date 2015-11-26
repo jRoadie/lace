@@ -1,4 +1,4 @@
-import {lace} from './lace'
+import lace from './lace'
 
 var glace = lace();
 

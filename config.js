@@ -3,7 +3,7 @@ module.exports = {
     base_url: '/',
     dir: {
         base: __dirname,
-        src: __dirname + '/src/es6',
-        dist: __dirname + '/dist/es6'
+        src: __dirname + '/src',
+        dist: __dirname + '/dist'
     }
 };

@@ -63,7 +63,7 @@
         };
 
         scriptlet.scope = function(data) {
-            var scope = require('../../src/scope');
+            var scope = require('scope');
 
         };
 

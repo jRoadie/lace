@@ -1,5 +1,5 @@
 import { $, util } from './util-node'
-import { Taglet } from './taglet'
+import Taglet from './taglet'
 
 var
 
@@ -52,8 +52,9 @@ class Lace {
 
     }
 
-    render(html, data) {
-        console.log($(html));
+    render(template, data) {
+        var $tmpl = $(template);
+        console.log($tmpl);
     }
 
     definition(type, name, def) {
@@ -80,6 +81,10 @@ Lace.prototype.__lace__ = {
 
 Lace.init = function (name) {
     return warehouse.laces[name] = warehouse.laces[name] || new Lace(name);
+};
+
+Lace.parse = function(template) {
+
 };
 
 /**

@@ -14,4 +14,4 @@ class Taglet {
 
 }
 
-export { Taglet }
+export default Taglet
