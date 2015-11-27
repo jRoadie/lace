@@ -1,4 +1,9 @@
 var
+    dep = require('./dependencies'),
+    $ = dep.$,
+    glace = dep.glace;
+
+var
     lace,
 
     version = '1.0.0',
@@ -45,14 +50,14 @@ Lace.prototype = {
      * @param global, true when make available only for this lace
      * @returns {*}
      */
-    annotation: function (name, def, global = false) {
+    annotation: function (name, def, global) {
         if(def) {
             this.definition('annotation', name, def);
         }
         return this.instance('annotation', name);
     },
 
-    taglet: function (name, def, global = false) {
+    taglet: function (name, def, global) {
         if(def) {
             this.definition('taglet', name, def);
         }
@@ -64,7 +69,7 @@ Lace.prototype = {
     },
 
     render: function (html, data) {
-
+        console.log($(html));
     },
 
     definition: function (type, name, def) {
@@ -90,3 +95,5 @@ lace = function (name) {
     name = name || 'global';
     return Lace.init(name);
 };
+
+module.exports = lace;
