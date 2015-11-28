@@ -1,7 +1,4 @@
-var
-    dep = require('./dependencies'),
-    $ = dep.$,
-    glace = dep.glace;
+var $ = require('cheerio');
 
 var
     lace,

@@ -1,5 +1,3 @@
-var glace = lace();
-
 glace.taglet('let', {
     compile: function() {
 
